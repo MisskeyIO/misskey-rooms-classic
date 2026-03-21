@@ -2,9 +2,21 @@ name = "misskey-rooms-classic"
 main = "src/index.ts"
 compatibility_date = "2025-03-17"
 
-assets = { directory = "../../dist" }
+assets = { directory = "../../dist", not_found_handling = "single-page-application" }
 
 [[d1_databases]]
 binding = "DB"
 database_name = "misskey-rooms"
 database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" # wrangler d1 create misskey-rooms で取得した値に差し替え
+
+[vars]
+# misskey.io 管理画面の JWT SSO サービスプロバイダーに設定した ID
+SSO_SERVICE_ID = ""
+# JWT の発行者 (iss クレーム)
+SSO_ISSUER = "https://misskey.io"
+# JWT の aud クレーム。misskey.io の SP 設定で audience を指定した場合のみ設定 (通常は空欄)
+SSO_AUDIENCE = ""
+
+# SSO_JWT_PUBLIC_KEY は wrangler secret put SSO_JWT_PUBLIC_KEY で設定すること
+# misskey.io SP 設定の「公開鍵」の JWK JSON 文字列を使用 (RS256)
+# 秘密鍵は misskey.io 側が保持し、こちらは公開鍵だけで署名を検証する
