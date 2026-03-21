@@ -1,0 +1,10 @@
+name = "misskey-rooms-classic"
+main = "src/index.ts"
+compatibility_date = "2025-03-17"
+
+assets = { directory = "../../dist" }
+
+[[d1_databases]]
+binding = "DB"
+database_name = "misskey-rooms"
+database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" # wrangler d1 create misskey-rooms で取得した値に差し替え

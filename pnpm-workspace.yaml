@@ -1,0 +1,35 @@
+packages:
+  - apps/*
+  - packages/*
+
+approveBuilds: esbuild,workerd,sharp
+
+catalog:
+  "@orpc/client": latest
+  "@orpc/contract": ^1.13.9
+  "@orpc/server": latest
+  '@tabler/icons-vue': ^3.40.0
+  "@types/three": ^0.183.1
+  "@types/uuid": ^11.0.0
+  "@vitejs/plugin-vue": ^6.0.5
+  hono: ^4.12.8
+  three: ^0.183.2
+  typescript: ~5.9.3
+  uuid: ^13.0.0
+  vite: npm:@voidzero-dev/vite-plus-core@latest
+  vite-plus: latest
+  vitest: npm:@voidzero-dev/vite-plus-test@latest
+  vue: ^3.5.30
+  zod: latest
+
+catalogMode: prefer
+overrides:
+  vite: "catalog:"
+  vitest: "catalog:"
+peerDependencyRules:
+  allowAny:
+    - vite
+    - vitest
+  allowedVersions:
+    vite: "*"
+    vitest: "*"

@@ -1,0 +1,23 @@
+{
+  "name": "@misskey-rooms/api",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "db:migrate:local": "wrangler d1 execute misskey-rooms --local --file=migrations/0001_init.sql",
+    "db:migrate:remote": "wrangler d1 execute misskey-rooms --remote --file=migrations/0001_init.sql"
+  },
+  "dependencies": {
+    "@misskey-rooms/contract": "workspace:*",
+    "@orpc/server": "catalog:",
+    "hono": "catalog:"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20260317.1",
+    "typescript": "catalog:",
+    "vite-plus": "catalog:",
+    "wrangler": "^4.76.0"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "name": "misskey-rooms-classic",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "ready": "vp fmt && vp lint && vp run build -r",
+    "dev": "vp run @misskey-rooms/web#dev",
+    "deploy": "vp run @misskey-rooms/web#build && vp run @misskey-rooms/api#deploy",
+    "prepare": "vp config"
+  },
+  "devDependencies": {
+    "vite-plus": "catalog:"
+  },
+  "engines": {
+    "node": ">=22.12.0"
+  },
+  "packageManager": "pnpm@10.32.1"
+}

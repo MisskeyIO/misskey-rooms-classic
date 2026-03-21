@@ -1,0 +1,29 @@
+{
+  "name": "@misskey-rooms/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vp dev",
+    "build": "vp build",
+    "preview": "vp preview"
+  },
+  "dependencies": {
+    "@misskey-rooms/contract": "workspace:*",
+    "@misskey-rooms/shared": "workspace:*",
+    "@orpc/client": "catalog:",
+    "@orpc/contract": "catalog:",
+    "@tabler/icons-vue": "catalog:",
+    "three": "catalog:",
+    "uuid": "catalog:",
+    "vue": "catalog:"
+  },
+  "devDependencies": {
+    "@types/three": "catalog:",
+    "@types/uuid": "catalog:",
+    "@vitejs/plugin-vue": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:",
+    "vite-plus": "catalog:"
+  }
+}
