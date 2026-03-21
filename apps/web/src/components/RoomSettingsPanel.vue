@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { IconArmchair, IconDeviceFloppy, IconTrash } from "@tabler/icons-vue";
+import BaseButton from "./BaseButton.vue";
 
 defineProps<{
   pickerOpen: boolean;
@@ -17,9 +18,9 @@ const emit = defineEmits<{
 
 <template>
   <div class="panel-right">
-    <button class="add-btn" @click="emit('togglePicker')">
+    <BaseButton class="panel-button" @click="emit('togglePicker')">
       <IconArmchair :size="16" /> 家具を置く
-    </button>
+    </BaseButton>
 
     <div class="room-settings">
       <label class="setting-label">
@@ -36,8 +37,12 @@ const emit = defineEmits<{
       </label>
     </div>
 
-    <button class="save-btn" @click="emit('save')"><IconDeviceFloppy :size="16" /> 保存</button>
-    <button class="clear-btn" @click="emit('clearAll')"><IconTrash :size="16" /> 片付け</button>
+    <BaseButton class="panel-button" @click="emit('save')">
+      <IconDeviceFloppy :size="16" /> 保存
+    </BaseButton>
+    <BaseButton class="panel-button" variant="danger" @click="emit('clearAll')">
+      <IconTrash :size="16" /> 片付け
+    </BaseButton>
   </div>
 </template>
 
@@ -47,11 +52,11 @@ const emit = defineEmits<{
   top: 0;
   right: 0;
   z-index: 10;
-  background: rgb(from var(--accent) r g b / 0.82);
+  background: var(--panel-bg);
   backdrop-filter: blur(6px);
   padding: 12px;
   width: 200px;
-  color: #fff;
+  color: var(--app-fg-strong);
   font-size: 13px;
   border-radius: 0 0 0 8px;
   display: flex;
@@ -59,21 +64,9 @@ const emit = defineEmits<{
   gap: 8px;
 }
 
-.add-btn {
+.panel-button {
   width: 100%;
-  padding: 9px;
-  border: none;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: bold;
-  text-align: center;
-  transition: background 0.15s;
-}
-.add-btn:hover {
-  background: rgba(255, 255, 255, 0.22);
+  justify-content: center;
 }
 
 .room-settings {
@@ -81,8 +74,8 @@ const emit = defineEmits<{
   flex-direction: column;
   gap: 10px;
   padding: 6px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.15);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  border-top: 1px solid var(--panel-border);
+  border-bottom: 1px solid var(--panel-border);
 }
 
 .setting-label {
@@ -90,17 +83,18 @@ const emit = defineEmits<{
   flex-direction: column;
   gap: 4px;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--app-fg-muted);
 }
 
 .setting-label select {
   width: 100%;
-  padding: 5px 6px;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(0, 0, 0, 0.3);
-  color: #fff;
+  padding: 7px 8px;
+  border-radius: 6px;
+  border: 1px solid var(--input-border);
+  background: var(--input-bg);
+  color: var(--app-fg-strong);
   font-size: 13px;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.03);
 }
 
 .setting-color {
@@ -111,29 +105,10 @@ const emit = defineEmits<{
 
 .setting-color input[type="color"] {
   width: 48px;
-  height: 26px;
-  border: none;
-  border-radius: 3px;
+  height: 30px;
+  border: 1px solid var(--button-border);
+  border-radius: 6px;
+  background: var(--input-bg);
   cursor: pointer;
-}
-
-.save-btn,
-.clear-btn {
-  width: 100%;
-  padding: 8px;
-  border: none;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  cursor: pointer;
-  font-size: 13px;
-  text-align: center;
-  transition: background 0.15s;
-}
-.save-btn:hover {
-  background: rgba(255, 255, 255, 0.22);
-}
-.clear-btn:hover {
-  background: rgba(180, 40, 40, 0.5);
 }
 </style>

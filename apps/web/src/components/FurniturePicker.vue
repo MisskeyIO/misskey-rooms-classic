@@ -46,14 +46,14 @@ const emit = defineEmits<{
   position: absolute;
   inset: 0;
   z-index: 20;
-  background: rgba(0, 0, 0, 0.4);
+  background: var(--overlay-bg);
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .furniture-picker {
-  background: rgb(from var(--accent) r g b / 0.95);
+  background: var(--panel-bg-strong);
   backdrop-filter: blur(8px);
   border-radius: 8px;
   width: 560px;
@@ -68,8 +68,8 @@ const emit = defineEmits<{
   padding: 12px 16px;
   font-size: 14px;
   font-weight: bold;
-  color: #fff;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--app-fg-strong);
+  border-bottom: 1px solid var(--panel-border);
 }
 
 .picker-loading {
@@ -93,18 +93,25 @@ const emit = defineEmits<{
   align-items: center;
   gap: 4px;
   padding: 6px 4px;
-  border: none;
+  border: 1px solid var(--button-border);
   border-radius: 6px;
-  background: rgba(255, 255, 255, 0.08);
-  color: #fff;
+  background: var(--button-bg);
+  color: var(--button-fg);
   cursor: pointer;
   font-size: 11px;
-  transition: background 0.15s;
+  font-weight: 700;
+  box-shadow: 0 1px 2px var(--button-shadow);
+  transition:
+    background 0.15s,
+    box-shadow 0.15s,
+    transform 0.15s;
   text-align: center;
 }
 
 .picker-item:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: var(--button-bg-hover);
+  box-shadow: 0 3px 10px var(--button-shadow-hover);
+  transform: translateY(-1px);
 }
 
 .picker-preview {
@@ -112,7 +119,7 @@ const emit = defineEmits<{
   height: 100px;
   border-radius: 4px;
   overflow: hidden;
-  background: #111;
+  background: var(--preview-bg);
   pointer-events: none;
 }
 

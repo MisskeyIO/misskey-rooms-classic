@@ -2,6 +2,7 @@
 import type { furnitureDefs } from "@misskey-rooms/shared";
 import FurniturePreview from "./FurniturePreview.vue";
 import { IconArrowsMove, IconRotate, IconPackage } from "@tabler/icons-vue";
+import BaseButton from "./BaseButton.vue";
 
 defineProps<{
   furnitureName: string;
@@ -42,22 +43,23 @@ const emit = defineEmits<{
     </template>
 
     <div class="action-buttons">
-      <button :class="{ active: isTranslateMode }" @click="emit('translate')">
+      <BaseButton class="action-button" :active="isTranslateMode" @click="emit('translate')">
         <IconArrowsMove :size="15" /> 移動
-      </button>
-      <button :class="{ active: isRotateMode }" @click="emit('rotate')">
+      </BaseButton>
+      <BaseButton class="action-button" :active="isRotateMode" @click="emit('rotate')">
         <IconRotate :size="15" /> 回転
-      </button>
-      <button
+      </BaseButton>
+      <BaseButton
         v-if="isTranslateMode || isRotateMode"
-        class="done-btn"
+        class="action-button"
+        variant="success"
         @click="emit('exitTransform')"
       >
         完了
-      </button>
-      <button class="remove-btn" @click="emit('removeFurniture')">
+      </BaseButton>
+      <BaseButton class="action-button" variant="danger" @click="emit('removeFurniture')">
         <IconPackage :size="15" /> しまう
-      </button>
+      </BaseButton>
     </div>
   </div>
 </template>
@@ -68,11 +70,11 @@ const emit = defineEmits<{
   top: 0;
   left: 0;
   z-index: 10;
-  background: rgb(from var(--accent) r g b / 0.82);
+  background: var(--panel-bg);
   backdrop-filter: blur(6px);
   padding: 12px;
   width: 200px;
-  color: #fff;
+  color: var(--app-fg-strong);
   font-size: 13px;
   border-radius: 0 0 8px 0;
 }
@@ -86,7 +88,7 @@ const emit = defineEmits<{
 .furniture-preview {
   width: 100%;
   aspect-ratio: 1;
-  background: #000;
+  background: var(--preview-bg);
   border-radius: 4px;
   margin-bottom: 10px;
   display: flex;
@@ -102,15 +104,16 @@ const emit = defineEmits<{
 .prop-item label {
   display: block;
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--app-fg-muted);
   margin-bottom: 3px;
 }
 
 .prop-item input[type="color"] {
   width: 100%;
-  height: 28px;
-  border: none;
-  border-radius: 3px;
+  height: 30px;
+  border: 1px solid var(--button-border);
+  border-radius: 6px;
+  background: var(--input-bg);
   cursor: pointer;
 }
 
@@ -121,39 +124,8 @@ const emit = defineEmits<{
   margin-top: 4px;
 }
 
-.action-buttons button {
+.action-button {
   width: 100%;
-  padding: 8px;
-  border: none;
-  border-radius: 4px;
-  background: rgba(255, 255, 255, 0.12);
-  color: #fff;
-  cursor: pointer;
-  font-size: 13px;
-  text-align: center;
-  transition: background 0.15s;
-}
-
-.action-buttons button:hover {
-  background: rgba(255, 255, 255, 0.22);
-}
-
-.action-buttons button.active {
-  background: rgba(255, 255, 255, 0.28);
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.5);
-}
-
-.done-btn {
-  background: rgba(46, 204, 113, 0.4) !important;
-}
-.done-btn:hover {
-  background: rgba(46, 204, 113, 0.6) !important;
-}
-
-.remove-btn {
-  background: rgba(180, 40, 40, 0.5) !important;
-}
-.remove-btn:hover {
-  background: rgba(180, 40, 40, 0.75) !important;
+  justify-content: center;
 }
 </style>
