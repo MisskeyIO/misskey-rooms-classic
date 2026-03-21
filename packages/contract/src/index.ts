@@ -12,7 +12,9 @@ const furnitureSchema = z.object({
   type: z.string().max(50),
   position: positionSchema,
   rotation: positionSchema,
-  props: z.record(z.string().max(50), z.string().max(1024)).optional()
+  props: z
+    .record(z.string().max(50), z.string().max(1024))
+    .optional()
     .refine((props) => !props || Object.keys(props).length <= 10, {
       message: "Too many properties",
     }),

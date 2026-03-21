@@ -2,7 +2,7 @@ import { RPCHandler } from "@orpc/server/fetch";
 import { CORSPlugin } from "@orpc/server/plugins";
 import { Hono } from "hono";
 import { router } from "./router.ts";
-import { registerAuthRoutes } from "./auth.ts";
+import { registerAuthRoutes } from "./libs/auth.ts";
 
 type Bindings = {
   DB: D1Database;
@@ -26,22 +26,15 @@ const rpcHandler = new RPCHandler(router, {
 });
 
 app.all("/rpc/*", async (c) => {
-  const authHeader = c.req.header("Authorization");
-  const token = authHeader?.replace("Bearer ", "").trim();
-
-  let currentUserId: string | undefined;
-  if (token) {
-    const session = await c.env.DB.prepare(
-      "SELECT user_id FROM sessions WHERE id = ? AND expires_at > datetime('now')",
-    )
-      .bind(token)
-      .first<{ user_id: string }>();
-    currentUserId = session?.user_id;
-  }
-
   const { matched, response } = await rpcHandler.handle(c.req.raw, {
     prefix: "/rpc",
-    context: { DB: c.env.DB, currentUserId },
+    context: {
+      DB: c.env.DB,
+      headers: c.req.raw.headers,
+      SSO_JWT_PUBLIC_KEY: c.env.SSO_JWT_PUBLIC_KEY,
+      SSO_ISSUER: c.env.SSO_ISSUER,
+      SSO_AUDIENCE: c.env.SSO_AUDIENCE,
+    },
   });
   if (matched) return response;
   return c.notFound();

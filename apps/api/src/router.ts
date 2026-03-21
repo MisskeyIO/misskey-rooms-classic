@@ -1,9 +1,10 @@
-import { ORPCError, implement } from "@orpc/server";
+import { implement, ORPCError } from "@orpc/server";
 import { contract } from "@misskey-rooms/contract";
+import { authMiddleware, type AuthContext } from "./middleware/auth.ts";
 
-type Context = { DB: D1Database; currentUserId?: string };
+const os = implement(contract).$context<AuthContext>();
 
-const os = implement(contract).$context<Context>();
+const protectedProcedure = os.use(authMiddleware);
 
 export const router = os.router({
   getRoom: os.getRoom.handler(async ({ input, context }) => {
@@ -34,7 +35,7 @@ export const router = os.router({
     };
   }),
 
-  saveRoom: os.saveRoom.handler(async ({ input, context }) => {
+  saveRoom: protectedProcedure.saveRoom.handler(async ({ input, context }) => {
     if (!context.currentUserId) {
       throw new ORPCError("UNAUTHORIZED", {
         message: "ログインが必要です",
@@ -75,7 +76,7 @@ export const router = os.router({
     return results?.map((r) => r.floor) ?? [];
   }),
 
-  deleteRoom: os.deleteRoom.handler(async ({ input, context }) => {
+  deleteRoom: protectedProcedure.deleteRoom.handler(async ({ input, context }) => {
     if (!context.currentUserId) {
       throw new ORPCError("UNAUTHORIZED", {
         message: "ログインが必要です",

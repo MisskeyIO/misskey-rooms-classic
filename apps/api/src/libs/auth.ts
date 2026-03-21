@@ -110,7 +110,6 @@ export function registerAuthRoutes(app: Hono<{ Bindings: Bindings }>) {
     return c.redirect(ssoUrl);
   });
 
-  // JWT 検証: misskey.io からの JWT をローカルで RS256 署名検証してセッションを発行
   app.post("/auth/verify-jwt", async (c) => {
     let body: { jwt?: string };
     try {
@@ -134,31 +133,17 @@ export function registerAuthRoutes(app: Hono<{ Bindings: Bindings }>) {
       return c.json({ error: "Invalid or expired JWT" }, 401);
     }
 
-    const sessionToken = crypto.randomUUID();
-    const userId = payload.preferred_username;
-    const expiresAt = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString();
-
-    await c.env.DB.prepare(
-      `INSERT INTO sessions (id, user_id, instance, access_token, expires_at)
-       VALUES (?, ?, ?, ?, ?)`,
-    )
-      .bind(sessionToken, userId, "misskey.io", payload.sub, expiresAt)
-      .run();
-
     return c.json({
-      token: sessionToken,
-      userId,
+      jwt,
+      userId: payload.preferred_username,
       name: payload.name,
       picture: payload.picture ?? null,
     });
   });
 
   app.post("/auth/logout", async (c) => {
-    const authHeader = c.req.header("Authorization");
-    const token = authHeader?.replace("Bearer ", "").trim();
-    if (token) {
-      await c.env.DB.prepare("DELETE FROM sessions WHERE id = ?").bind(token).run();
-    }
     return c.json({ ok: true });
   });
 }
+
+export { verifyJwt, type SsoJwtPayload, type Bindings };
