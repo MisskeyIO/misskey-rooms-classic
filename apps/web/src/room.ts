@@ -39,6 +39,7 @@ export class Room {
   private isTransformMode = false;
   private renderFrameRequestId = 0;
   private container: HTMLElement;
+  private colorSchemeMediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
 
   private get canvas(): HTMLCanvasElement {
     return this.renderer.domElement;
@@ -103,7 +104,7 @@ export class Room {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(width, height);
     this.renderer.autoClear = false;
-    this.renderer.setClearColor(new THREE.Color(0x051f2d));
+    this.applyRendererClearColor();
     this.renderer.shadowMap.enabled = this.enableShadow;
     this.renderer.shadowMap.type =
       this.graphicsQuality === "ultra"
@@ -115,6 +116,8 @@ export class Room {
             : THREE.BasicShadowMap;
 
     container.appendChild(this.canvas);
+
+    this.colorSchemeMediaQuery.addEventListener("change", this.onColorSchemeChange);
     //#endregion
 
     //#region Camera
@@ -277,6 +280,15 @@ export class Room {
       this.composer.setSize(w, h);
     }
   };
+
+  private onColorSchemeChange = () => {
+    this.applyRendererClearColor();
+  };
+
+  private applyRendererClearColor() {
+    const value = getComputedStyle(document.documentElement).getPropertyValue("--canvas-bg").trim();
+    this.renderer.setClearColor(new THREE.Color(value || "#232323"));
+  }
 
   //#region Render loop
   private renderWithoutPostFXs = () => {
@@ -643,6 +655,7 @@ export class Room {
   public destroy() {
     window.cancelAnimationFrame(this.renderFrameRequestId);
     window.removeEventListener("resize", this.onResize);
+    this.colorSchemeMediaQuery.removeEventListener("change", this.onColorSchemeChange);
     if (this.furnitureControl) {
       this.furnitureControl.detach();
       this.furnitureControl.dispose();

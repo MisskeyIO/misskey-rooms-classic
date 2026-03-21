@@ -4,8 +4,178 @@
   box-sizing: border-box;
 }
 
-:root {
-  --accent: #051f2d;
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --app-bg: rgb(249, 249, 249);
+  --app-fg: rgb(103, 103, 103);
+  --app-fg-strong: rgb(95, 95, 95);
+  --app-fg-muted: rgb(114, 129, 138);
+
+  --accent: rgb(134, 179, 0);
+  --link: rgb(68, 164, 193);
+
+  --canvas-bg: rgb(249, 249, 249);
+  --panel-bg: rgba(255, 255, 255, 0.85);
+  --panel-bg-strong: rgb(255, 255, 255);
+  --panel-border: rgb(232, 232, 232);
+
+  --surface-soft: rgb(242, 242, 242);
+  --surface-soft-hover: rgb(230, 230, 230);
+  --surface-soft-active: rgb(247, 247, 247);
+  --surface-soft-ring: rgba(0, 0, 0, 0.2);
+
+  --primary-soft: rgba(134, 179, 0, 0.15);
+  --primary-soft-hover: rgba(134, 179, 0, 0.15);
+  --success-soft: rgba(134, 179, 0, 0.15);
+  --success-soft-hover: rgba(134, 179, 0, 0.15);
+  --danger-soft: rgba(236, 65, 55, 0.2);
+  --danger-soft-hover: rgba(236, 65, 55, 0.33);
+
+  --button-fg: rgb(103, 103, 103);
+  --button-primary-fg: rgb(255, 255, 255);
+  --button-success-fg: rgb(103, 103, 103);
+  --button-danger-fg: rgb(95, 95, 95);
+  --button-bg: rgb(242, 242, 242);
+  --button-bg-hover: rgb(230, 230, 230);
+  --button-primary-bg: linear-gradient(135deg, rgb(134, 179, 0), rgb(74, 179, 0));
+  --button-primary-bg-hover: linear-gradient(135deg, rgb(144, 189, 10), rgb(84, 189, 10));
+  --button-success-bg: rgba(134, 179, 0, 0.15);
+  --button-success-bg-hover: rgba(134, 179, 0, 0.25);
+  --button-danger-bg: rgba(236, 65, 55, 0.2);
+  --button-danger-bg-hover: rgba(236, 65, 55, 0.33);
+  --button-border: rgba(0, 0, 0, 0.06);
+  --button-shadow: rgba(0, 0, 0, 0.05);
+  --button-shadow-hover: rgba(0, 0, 0, 0.08);
+  --button-primary-shadow: rgba(134, 179, 0, 0.18);
+
+  --input-bg: rgb(255, 255, 255);
+  --input-border: rgba(0, 0, 0, 0.1);
+
+  --overlay-bg: rgba(0, 0, 0, 0.3);
+  --preview-bg: rgb(249, 249, 249);
+
+  --spinner-track: rgb(232, 232, 232);
+  --spinner-head: rgb(134, 179, 0);
+
+  --error: rgb(236, 65, 55);
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --app-bg: rgb(12, 18, 16);
+  --app-fg: rgb(222, 231, 228);
+  --app-fg-strong: rgb(255, 255, 255);
+  --app-fg-muted: rgb(255, 255, 255);
+
+  --accent: rgb(180, 233, 0);
+  --link: rgb(36, 215, 206);
+
+  --canvas-bg: rgb(12, 18, 16);
+  --panel-bg: rgba(25, 35, 32, 0.85);
+  --panel-bg-strong: rgb(41, 51, 48);
+  --panel-border: rgba(231, 255, 251, 0.14);
+
+  --surface-soft: rgb(36, 50, 46);
+  --surface-soft-hover: rgb(46, 65, 59);
+  --surface-soft-active: rgb(31, 44, 40);
+  --surface-soft-ring: rgba(255, 255, 255, 0.2);
+
+  --primary-soft: rgba(180, 233, 0, 0.15);
+  --primary-soft-hover: rgba(180, 233, 0, 0.15);
+  --success-soft: rgba(180, 233, 0, 0.15);
+  --success-soft-hover: rgba(180, 233, 0, 0.15);
+  --danger-soft: rgba(236, 65, 55, 0.25);
+  --danger-soft-hover: rgba(236, 65, 55, 0.4);
+
+  --button-fg: rgb(222, 231, 228);
+  --button-primary-fg: rgb(25, 35, 32);
+  --button-success-fg: rgb(180, 233, 0);
+  --button-danger-fg: rgb(255, 255, 255);
+  --button-bg: rgb(36, 50, 46);
+  --button-bg-hover: rgb(46, 65, 59);
+  --button-primary-bg: linear-gradient(135deg, rgb(180, 233, 0), rgb(102, 233, 0));
+  --button-primary-bg-hover: linear-gradient(135deg, rgb(190, 243, 10), rgb(112, 243, 10));
+  --button-success-bg: rgba(180, 233, 0, 0.15);
+  --button-success-bg-hover: rgba(180, 233, 0, 0.24);
+  --button-danger-bg: rgba(236, 65, 55, 0.25);
+  --button-danger-bg-hover: rgba(236, 65, 55, 0.4);
+  --button-border: rgba(255, 255, 255, 0.04);
+  --button-shadow: rgba(0, 0, 0, 0.18);
+  --button-shadow-hover: rgba(0, 0, 0, 0.24);
+  --button-primary-shadow: rgba(180, 233, 0, 0.12);
+
+  --input-bg: rgb(25, 35, 32);
+  --input-border: rgba(255, 255, 255, 0.1);
+
+  --overlay-bg: rgba(0, 0, 0, 0.5);
+  --preview-bg: rgb(12, 18, 16);
+
+  --spinner-track: rgba(231, 255, 251, 0.14);
+  --spinner-head: rgb(180, 233, 0);
+
+  --error: rgb(236, 65, 55);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+
+    --app-bg: rgb(12, 18, 16);
+    --app-fg: rgb(222, 231, 228);
+    --app-fg-strong: rgb(255, 255, 255);
+    --app-fg-muted: rgb(255, 255, 255);
+
+    --accent: rgb(180, 233, 0);
+    --link: rgb(36, 215, 206);
+
+    --canvas-bg: rgb(12, 18, 16);
+    --panel-bg: rgba(25, 35, 32, 0.85);
+    --panel-bg-strong: rgb(41, 51, 48);
+    --panel-border: rgba(231, 255, 251, 0.14);
+
+    --surface-soft: rgb(36, 50, 46);
+    --surface-soft-hover: rgb(46, 65, 59);
+    --surface-soft-active: rgb(31, 44, 40);
+    --surface-soft-ring: rgba(255, 255, 255, 0.2);
+
+    --primary-soft: rgba(180, 233, 0, 0.15);
+    --primary-soft-hover: rgba(180, 233, 0, 0.15);
+    --success-soft: rgba(180, 233, 0, 0.15);
+    --success-soft-hover: rgba(180, 233, 0, 0.15);
+    --danger-soft: rgba(236, 65, 55, 0.25);
+    --danger-soft-hover: rgba(236, 65, 55, 0.4);
+
+    --button-fg: rgb(222, 231, 228);
+    --button-primary-fg: rgb(25, 35, 32);
+    --button-success-fg: rgb(180, 233, 0);
+    --button-danger-fg: rgb(255, 255, 255);
+    --button-bg: rgb(36, 50, 46);
+    --button-bg-hover: rgb(46, 65, 59);
+    --button-primary-bg: linear-gradient(135deg, rgb(180, 233, 0), rgb(102, 233, 0));
+    --button-primary-bg-hover: linear-gradient(135deg, rgb(190, 243, 10), rgb(112, 243, 10));
+    --button-success-bg: rgba(180, 233, 0, 0.15);
+    --button-success-bg-hover: rgba(180, 233, 0, 0.24);
+    --button-danger-bg: rgba(236, 65, 55, 0.25);
+    --button-danger-bg-hover: rgba(236, 65, 55, 0.4);
+    --button-border: rgba(255, 255, 255, 0.04);
+    --button-shadow: rgba(0, 0, 0, 0.18);
+    --button-shadow-hover: rgba(0, 0, 0, 0.24);
+    --button-primary-shadow: rgba(180, 233, 0, 0.12);
+
+    --input-bg: rgb(25, 35, 32);
+    --input-border: rgba(255, 255, 255, 0.1);
+
+    --overlay-bg: rgba(0, 0, 0, 0.5);
+    --preview-bg: rgb(12, 18, 16);
+
+    --spinner-track: rgba(231, 255, 251, 0.14);
+    --spinner-head: rgb(180, 233, 0);
+
+    --error: rgb(236, 65, 55);
+  }
 }
 
 html,
@@ -14,8 +184,8 @@ body {
   height: 100%;
   overflow: hidden;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  background: var(--accent);
-  color: #fff;
+  background: var(--app-bg);
+  color: var(--app-fg);
 }
 
 #app {

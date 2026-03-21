@@ -35,7 +35,7 @@ const emit = defineEmits<{
   bottom: 16px;
   right: 16px;
   z-index: 10;
-  background: rgb(from var(--accent) r g b / 0.82);
+  background: var(--panel-bg);
   backdrop-filter: blur(6px);
   border-radius: 8px;
   padding: 8px;
@@ -50,7 +50,7 @@ const emit = defineEmits<{
   display: flex;
   align-items: baseline;
   gap: 2px;
-  color: #fff;
+  color: var(--app-fg-strong);
   padding: 2px 0;
 }
 
@@ -61,6 +61,6 @@ const emit = defineEmits<{
 
 .floor-label {
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--app-fg-muted);
 }
 </style>

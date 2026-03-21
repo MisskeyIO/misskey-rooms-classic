@@ -16,15 +16,15 @@ defineProps<{ label?: string }>();
   align-items: center;
   justify-content: center;
   gap: 12px;
-  color: rgba(255, 255, 255, 0.7);
+  color: var(--app-fg-muted);
   font-size: 13px;
 }
 
 .spinner {
   width: 32px;
   height: 32px;
-  border: 3px solid rgba(255, 255, 255, 0.15);
-  border-top-color: rgba(255, 255, 255, 0.8);
+  border: 3px solid var(--spinner-track);
+  border-top-color: var(--spinner-head);
   border-radius: 50%;
   animation: spin 0.7s linear infinite;
 }

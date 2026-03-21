@@ -44,12 +44,12 @@ onMounted(async () => {
   justify-content: center;
   height: 100vh;
   gap: 16px;
-  color: white;
-  background: #1a1a2e;
+  color: var(--app-fg-strong);
+  background: var(--app-bg);
   font-size: 15px;
 }
 
 .error {
-  color: #f87171;
+  color: var(--error);
 }
 </style>

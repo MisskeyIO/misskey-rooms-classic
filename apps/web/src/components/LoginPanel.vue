@@ -31,12 +31,12 @@ const { isLoggedIn, currentUser, startLogin, logout } = useAuth();
   position: absolute;
   top: 12px;
   right: 12px;
-  background: rgb(from var(--accent) r g b / 0.6);
+  background: var(--panel-bg);
   backdrop-filter: blur(8px);
   border-radius: 8px;
   padding: 8px 12px;
   z-index: 100;
-  color: white;
+  color: var(--app-fg-strong);
   font-size: 13px;
 }
 
@@ -49,6 +49,6 @@ const { isLoggedIn, currentUser, startLogin, logout } = useAuth();
 
 .username {
   font-weight: 600;
-  color: #86c9e8;
+  color: var(--link);
 }
 </style>
