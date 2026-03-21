@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, useTemplateRef, onMounted, onBeforeUnmount } from "vue";
+import { ref, useTemplateRef, onMounted, onBeforeUnmount, computed } from "vue";
 import { useRoom } from "./composables/useRoom.ts";
 import FurniturePanel from "./components/FurniturePanel.vue";
 import RoomSettingsPanel from "./components/RoomSettingsPanel.vue";
@@ -8,6 +8,16 @@ import FloorNav from "./components/FloorNav.vue";
 import LoginPanel from "./components/LoginPanel.vue";
 
 const roomContainer = useTemplateRef<HTMLDivElement>("roomContainer");
+
+// iframe検出
+const isIframe = computed(() => {
+  if (typeof window === "undefined") return false;
+  try {
+    return window.self !== window.top;
+  } catch {
+    return true;
+  }
+});
 
 const {
   floor,
@@ -60,7 +70,7 @@ onBeforeUnmount(() => destroy());
 </script>
 
 <template>
-  <div class="room-app">
+  <div class="room-app" :class="{ 'is-iframe': isIframe }">
     <div ref="roomContainer" class="room-container" />
 
     <LoginPanel />
@@ -120,6 +130,18 @@ onBeforeUnmount(() => destroy());
   display: block;
   width: 100% !important;
   height: 100% !important;
+}
+
+/* iframe表示用のスタイル調整 */
+.room-app.is-iframe {
+  /* 親ページの余白を除去 */
+  position: fixed;
+  inset: 0;
+}
+
+.room-app.is-iframe .room-container :deep(canvas) {
+  /* iframe内でより鮮明に表示 */
+  image-rendering: auto;
 }
 
 .slide-left-enter-active,

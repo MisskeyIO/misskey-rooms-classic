@@ -1,0 +1,7 @@
+# Cloudflare Workers Assets Headers Configuration
+# https://developers.cloudflare.com/workers/static-assets/headers/
+
+# Allow iframe embedding from misskey.io only
+/*
+  Content-Security-Policy: frame-ancestors 'self' https://misskey.io https://*.misskey.io;
+  X-Frame-Options: SAMEORIGIN

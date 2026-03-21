@@ -14,5 +14,8 @@ export default defineConfig({
     proxy: {
       "/rpc": "http://localhost:8787",
     },
+    headers: {
+      "Content-Security-Policy": "frame-ancestors 'self' https://misskey.io https://*.misskey.io;",
+    },
   },
 });
