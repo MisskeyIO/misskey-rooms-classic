@@ -4,10 +4,9 @@ compatibility_date = "2026-03-21"
 
 assets = { directory = "../../dist", not_found_handling = "single-page-application" }
 
-[[d1_databases]]
-binding = "DB"
-database_name = "misskey-rooms"
-database_id = "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" # wrangler d1 create misskey-rooms で取得した値に差し替え
+[[kv_namespaces]]
+binding = "MISSKEY_ROOMS"
+id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" # wrangler kv:namespace create MISSKEY_ROOMS で取得した値に差し替え
 
 [vars]
 SSO_SERVICE_ID = ""

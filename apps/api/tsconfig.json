@@ -3,7 +3,6 @@
     "target": "ES2023",
     "module": "ESNext",
     "lib": ["ES2023"],
-    "types": ["@cloudflare/workers-types"],
     "skipLibCheck": true,
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
@@ -14,5 +13,5 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false
   },
-  "include": ["src"]
+  "include": ["src", "worker-configuration.d.ts"]
 }

@@ -1,37 +1,31 @@
 import { implement, ORPCError } from "@orpc/server";
-import { contract } from "@misskey-rooms/contract";
+import { contract, type RoomInfo } from "@misskey-rooms/contract";
 import { authMiddleware, type AuthContext } from "./middleware/auth.ts";
+
+interface RoomData extends RoomInfo {}
 
 const os = implement(contract).$context<AuthContext>();
 
 const protectedProcedure = os.use(authMiddleware);
 
+function getRoomKey(userId: string, floor: number): string {
+  return `room:${userId}:${floor}`;
+}
+
 export const router = os.router({
   getRoom: os.getRoom.handler(async ({ input, context }) => {
     const { userId, floor } = input;
 
-    const row = await context.DB.prepare(
-      "SELECT room_type, carpet_color, furnitures FROM rooms WHERE user_id = ? AND floor = ?",
-    )
-      .bind(userId, floor)
-      .first<{ room_type: string; carpet_color: string; furnitures: string }>();
+    const data = await context.MISSKEY_ROOMS.get<RoomData>(getRoomKey(userId, floor), "json");
 
-    if (!row) {
+    if (!data) {
       return { roomType: "default", carpetColor: "#85CAF0", furnitures: [] };
     }
 
-    let furnitures: unknown;
-    try {
-      furnitures = JSON.parse(row.furnitures);
-    } catch {
-      console.error(`Invalid JSON in DB for user ${userId}, floor ${floor}`);
-      furnitures = [];
-    }
-
     return {
-      roomType: row.room_type,
-      carpetColor: row.carpet_color,
-      furnitures: Array.isArray(furnitures) ? furnitures : [],
+      roomType: data.roomType,
+      carpetColor: data.carpetColor,
+      furnitures: Array.isArray(data.furnitures) ? data.furnitures : [],
     };
   }),
 
@@ -49,31 +43,37 @@ export const router = os.router({
 
     const { userId, floor, room } = input;
 
-    await context.DB.prepare(
-      `INSERT INTO rooms (user_id, floor, room_type, carpet_color, furnitures, updated_at)
-			 VALUES (?, ?, ?, ?, ?, datetime('now'))
-			 ON CONFLICT(user_id, floor) DO UPDATE SET
-			   room_type = excluded.room_type,
-			   carpet_color = excluded.carpet_color,
-			   furnitures = excluded.furnitures,
-			   updated_at = datetime('now')`,
-    )
-      .bind(userId, floor, room.roomType, room.carpetColor, JSON.stringify(room.furnitures))
-      .run();
+    const roomData: RoomData = {
+      roomType: room.roomType,
+      carpetColor: room.carpetColor,
+      furnitures: room.furnitures,
+    };
+
+    await context.MISSKEY_ROOMS.put(getRoomKey(userId, floor), JSON.stringify(roomData));
 
     return { ok: true as const };
   }),
 
   getFloors: os.getFloors.handler(async ({ input, context }) => {
     const { userId } = input;
+    const prefix = `room:${userId}:`;
 
-    const { results } = await context.DB.prepare(
-      "SELECT floor FROM rooms WHERE user_id = ? ORDER BY floor",
-    )
-      .bind(userId)
-      .all<{ floor: number }>();
+    const floors: number[] = [];
+    let cursor: string | undefined;
 
-    return results?.map((r) => r.floor) ?? [];
+    do {
+      const listResult = await context.MISSKEY_ROOMS.list({ prefix, cursor });
+      for (const key of listResult.keys) {
+        const floorStr = key.name.slice(prefix.length);
+        const floor = parseInt(floorStr, 10);
+        if (!Number.isNaN(floor)) {
+          floors.push(floor);
+        }
+      }
+      cursor = listResult.list_complete ? undefined : listResult.cursor;
+    } while (cursor);
+
+    return floors.sort((a, b) => a - b);
   }),
 
   deleteRoom: protectedProcedure.deleteRoom.handler(async ({ input, context }) => {
@@ -90,9 +90,7 @@ export const router = os.router({
 
     const { userId, floor } = input;
 
-    await context.DB.prepare("DELETE FROM rooms WHERE user_id = ? AND floor = ?")
-      .bind(userId, floor)
-      .run();
+    await context.MISSKEY_ROOMS.delete(getRoomKey(userId, floor));
 
     return { ok: true as const };
   }),

@@ -4,15 +4,7 @@ import { Hono } from "hono";
 import { router } from "./router.ts";
 import { registerAuthRoutes } from "./libs/auth.ts";
 
-type Bindings = {
-  DB: D1Database;
-  SSO_SERVICE_ID: string;
-  SSO_ISSUER: string;
-  SSO_AUDIENCE: string;
-  SSO_JWT_PUBLIC_KEY: string;
-};
-
-const app = new Hono<{ Bindings: Bindings }>();
+const app = new Hono<{ Bindings: Env }>();
 
 registerAuthRoutes(app);
 
@@ -29,7 +21,7 @@ app.all("/rpc/*", async (c) => {
   const { matched, response } = await rpcHandler.handle(c.req.raw, {
     prefix: "/rpc",
     context: {
-      DB: c.env.DB,
+      MISSKEY_ROOMS: c.env.MISSKEY_ROOMS,
       headers: c.req.raw.headers,
       SSO_JWT_PUBLIC_KEY: c.env.SSO_JWT_PUBLIC_KEY,
       SSO_ISSUER: c.env.SSO_ISSUER,

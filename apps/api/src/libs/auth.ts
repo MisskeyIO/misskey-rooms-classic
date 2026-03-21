@@ -1,15 +1,5 @@
 import type { Hono } from "hono";
 
-type Bindings = {
-  DB: D1Database;
-  SSO_SERVICE_ID: string;
-  SSO_ISSUER: string;
-  SSO_AUDIENCE: string; // 空の場合は検証をスキップ
-  // misskey.io SP 設定の publicKey (RS256 公開鍵の JWK JSON 文字列)
-  // wrangler secret put SSO_JWT_PUBLIC_KEY で設定すること
-  SSO_JWT_PUBLIC_KEY: string;
-};
-
 // JWTIdentifyProviderService.ts のペイロード定義に準拠
 interface SsoJwtPayload {
   sub: string; // Misskey 内部ユーザー ID
@@ -97,7 +87,7 @@ async function verifyJwt(
   return payload;
 }
 
-export function registerAuthRoutes(app: Hono<{ Bindings: Bindings }>) {
+export function registerAuthRoutes(app: Hono<{ Bindings: Env }>) {
   // SSO 開始: misskey.io の JWT SSO ページへリダイレクト
   app.get("/auth/login", (c) => {
     const returnTo = c.req.query("return_to") ?? "/";
@@ -146,4 +136,4 @@ export function registerAuthRoutes(app: Hono<{ Bindings: Bindings }>) {
   });
 }
 
-export { verifyJwt, type SsoJwtPayload, type Bindings };
+export { verifyJwt, type SsoJwtPayload };

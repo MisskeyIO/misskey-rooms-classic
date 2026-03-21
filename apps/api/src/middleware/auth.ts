@@ -2,12 +2,8 @@ import { implement } from "@orpc/server";
 import { contract } from "@misskey-rooms/contract";
 import { verifyJwt } from "../libs/auth.ts";
 
-export type AuthContext = {
-  DB: D1Database;
+export type AuthContext = Pick<Env, "MISSKEY_ROOMS" | "SSO_JWT_PUBLIC_KEY" | "SSO_ISSUER" | "SSO_AUDIENCE"> & {
   headers: Headers;
-  SSO_JWT_PUBLIC_KEY: string;
-  SSO_ISSUER: string;
-  SSO_AUDIENCE: string;
   currentUserId?: string;
 };
 

@@ -26,6 +26,8 @@ export const roomInfoSchema = z.object({
   furnitures: z.array(furnitureSchema).max(100),
 });
 
+export type RoomInfo = z.infer<typeof roomInfoSchema>;
+
 export const contract = {
   getRoom: oc
     .input(z.object({ userId: z.string(), floor: z.number().int().default(0) }))
