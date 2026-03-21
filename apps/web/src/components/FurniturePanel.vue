@@ -68,7 +68,7 @@ const emit = defineEmits<{
   top: 0;
   left: 0;
   z-index: 10;
-  background: rgba(80, 20, 20, 0.82);
+  background: rgb(from var(--accent) r g b / 0.82);
   backdrop-filter: blur(6px);
   padding: 12px;
   width: 200px;

@@ -53,7 +53,7 @@ const emit = defineEmits<{
 }
 
 .furniture-picker {
-  background: rgba(60, 15, 15, 0.95);
+  background: rgb(from var(--accent) r g b / 0.95);
   backdrop-filter: blur(8px);
   border-radius: 8px;
   width: 560px;
