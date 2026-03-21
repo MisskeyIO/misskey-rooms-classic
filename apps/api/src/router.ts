@@ -1,7 +1,7 @@
-import { implement } from "@orpc/server";
+import { ORPCError, implement } from "@orpc/server";
 import { contract } from "@misskey-rooms/contract";
 
-type Context = { DB: D1Database };
+type Context = { DB: D1Database; currentUserId?: string };
 
 const os = implement(contract).$context<Context>();
 
@@ -27,6 +27,17 @@ export const router = os.router({
   }),
 
   saveRoom: os.saveRoom.handler(async ({ input, context }) => {
+    if (!context.currentUserId) {
+      throw new ORPCError("UNAUTHORIZED", {
+        message: "ログインが必要です",
+      });
+    }
+    if (context.currentUserId !== input.userId) {
+      throw new ORPCError("FORBIDDEN", {
+        message: "他のユーザーの部屋は編集できません",
+      });
+    }
+
     const { userId, floor, room } = input;
 
     await context.DB.prepare(
@@ -57,6 +68,17 @@ export const router = os.router({
   }),
 
   deleteRoom: os.deleteRoom.handler(async ({ input, context }) => {
+    if (!context.currentUserId) {
+      throw new ORPCError("UNAUTHORIZED", {
+        message: "ログインが必要です",
+      });
+    }
+    if (context.currentUserId !== input.userId) {
+      throw new ORPCError("FORBIDDEN", {
+        message: "他のユーザーの部屋は削除できません",
+      });
+    }
+
     const { userId, floor } = input;
 
     await context.DB.prepare("DELETE FROM rooms WHERE user_id = ? AND floor = ?")
