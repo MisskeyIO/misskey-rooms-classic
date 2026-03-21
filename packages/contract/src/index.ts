@@ -8,17 +8,20 @@ const positionSchema = z.object({
 });
 
 const furnitureSchema = z.object({
-  id: z.string(),
-  type: z.string(),
+  id: z.string().max(50),
+  type: z.string().max(50),
   position: positionSchema,
   rotation: positionSchema,
-  props: z.record(z.string(), z.string()).optional(),
+  props: z.record(z.string().max(50), z.string().max(1024)).optional()
+    .refine((props) => !props || Object.keys(props).length <= 10, {
+      message: "Too many properties",
+    }),
 });
 
 export const roomInfoSchema = z.object({
-  roomType: z.string(),
-  carpetColor: z.string(),
-  furnitures: z.array(furnitureSchema),
+  roomType: z.string().max(50),
+  carpetColor: z.string().regex(/^#[0-9A-Fa-f]{6}$/),
+  furnitures: z.array(furnitureSchema).max(100),
 });
 
 export const contract = {

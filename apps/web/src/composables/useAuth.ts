@@ -7,11 +7,30 @@ export interface AuthState {
   picture: string | null;
 }
 
+function isValidAuthState(data: unknown): data is AuthState {
+  if (typeof data !== "object" || data === null) return false;
+  const d = data as Record<string, unknown>;
+  return (
+    typeof d.token === "string" &&
+    typeof d.userId === "string" &&
+    /^[a-zA-Z0-9_-]+$/.test(d.userId) &&
+    typeof d.name === "string" &&
+    (d.picture === null || (typeof d.picture === "string" && /^https?:\/\//.test(d.picture)))
+  );
+}
+
 function loadAuthState(): AuthState | null {
   try {
     const stored = localStorage.getItem("misskey_rooms_auth");
-    return stored ? (JSON.parse(stored) as AuthState) : null;
+    if (!stored) return null;
+    const parsed = JSON.parse(stored);
+    if (!isValidAuthState(parsed)) {
+      localStorage.removeItem("misskey_rooms_auth");
+      return null;
+    }
+    return parsed;
   } catch {
+    localStorage.removeItem("misskey_rooms_auth");
     return null;
   }
 }
@@ -35,9 +54,10 @@ export function useAuth() {
         body: JSON.stringify({ jwt }),
       });
       if (!res.ok) return false;
-      const data = (await res.json()) as AuthState;
-      authState.value = data;
-      localStorage.setItem("misskey_rooms_auth", JSON.stringify(data));
+      const rawData = await res.json();
+      if (!isValidAuthState(rawData)) return false;
+      authState.value = rawData;
+      localStorage.setItem("misskey_rooms_auth", JSON.stringify(rawData));
       return true;
     } catch {
       return false;

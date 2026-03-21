@@ -38,7 +38,7 @@ export function useRoom(roomContainer: Ref<HTMLDivElement | null>) {
   function initRoom(roomInfo: RoomInfo) {
     if (currentRoom) {
       currentRoom.destroy();
-      roomContainer.value!.innerHTML = "";
+      roomContainer.value!.replaceChildren();
     }
 
     roomType.value = roomInfo.roomType;

@@ -19,10 +19,18 @@ export const router = os.router({
       return { roomType: "default", carpetColor: "#85CAF0", furnitures: [] };
     }
 
+    let furnitures: unknown;
+    try {
+      furnitures = JSON.parse(row.furnitures);
+    } catch {
+      console.error(`Invalid JSON in DB for user ${userId}, floor ${floor}`);
+      furnitures = [];
+    }
+
     return {
       roomType: row.room_type,
       carpetColor: row.carpet_color,
-      furnitures: JSON.parse(row.furnitures),
+      furnitures: Array.isArray(furnitures) ? furnitures : [],
     };
   }),
 

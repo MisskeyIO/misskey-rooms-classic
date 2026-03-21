@@ -7,6 +7,18 @@ import BaseButton from "./components/BaseButton.vue";
 const { handleJwtCallback } = useAuth();
 const status = ref<"processing" | "error">("processing");
 
+function isValidRedirectUrl(url: string): boolean {
+  // 相対パスは許可
+  if (url.startsWith("/") && !url.startsWith("//")) return true;
+  // 同一オリジンのみ許可
+  try {
+    const parsed = new URL(url);
+    return parsed.origin === location.origin;
+  } catch {
+    return false;
+  }
+}
+
 onMounted(async () => {
   const params = new URLSearchParams(location.search);
   const jwt = params.get("jwt");
@@ -15,7 +27,8 @@ onMounted(async () => {
   if (jwt) {
     const ok = await handleJwtCallback(jwt);
     if (ok) {
-      location.replace(returnTo);
+      const safeReturnTo = isValidRedirectUrl(returnTo) ? returnTo : "/";
+      location.replace(safeReturnTo);
       return;
     }
   }
