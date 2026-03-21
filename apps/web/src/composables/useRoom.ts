@@ -1,10 +1,11 @@
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import type { Ref } from "vue";
 import { Room } from "../room.ts";
 import type { GraphicsQuality } from "../room.ts";
 import type { RoomInfo } from "@misskey-rooms/shared";
 import { furnitureDefs } from "@misskey-rooms/shared";
 import { orpc } from "./useApi.ts";
+import { useAuth } from "./useAuth.ts";
 
 function getParams() {
   const path = location.pathname.replace(/^\/+|\/+$/g, "");
@@ -17,9 +18,11 @@ function getParams() {
 
 export function useRoom(roomContainer: Ref<HTMLDivElement | null>) {
   const { userId: initUserId, floor: initFloor } = getParams();
+  const { currentUser } = useAuth();
 
   const userId = ref(initUserId);
   const floor = ref(initFloor);
+  const isMyRoom = computed(() => currentUser.value?.userId === userId.value);
   const quality = ref<GraphicsQuality>("medium");
   const roomType = ref("default");
   const carpetColor = ref("#85CAF0");
@@ -43,7 +46,7 @@ export function useRoom(roomContainer: Ref<HTMLDivElement | null>) {
 
     currentRoom = new Room(roomInfo, roomContainer.value!, {
       graphicsQuality: quality.value,
-      isMyRoom: true,
+      isMyRoom: isMyRoom.value,
       useOrthographicCamera: false,
       onChangeSelect: (obj) => {
         if (obj) {
@@ -154,6 +157,12 @@ export function useRoom(roomContainer: Ref<HTMLDivElement | null>) {
     initRoom(info);
   });
 
+  watch(isMyRoom, () => {
+    if (!currentRoom) return;
+    const info = currentRoom.getRoomInfo();
+    initRoom(info);
+  });
+
   watch(roomType, (type) => {
     currentRoom?.changeRoomType(type);
   });
@@ -174,6 +183,7 @@ export function useRoom(roomContainer: Ref<HTMLDivElement | null>) {
     selectedFurnitureDef,
     isTranslateMode,
     isRotateMode,
+    isMyRoom,
     loadRoom,
     handleSave,
     addFurniture,

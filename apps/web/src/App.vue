@@ -5,6 +5,7 @@ import FurniturePanel from "./components/FurniturePanel.vue";
 import RoomSettingsPanel from "./components/RoomSettingsPanel.vue";
 import FurniturePicker from "./components/FurniturePicker.vue";
 import FloorNav from "./components/FloorNav.vue";
+import LoginPanel from "./components/LoginPanel.vue";
 
 const roomContainer = useTemplateRef<HTMLDivElement>("roomContainer");
 
@@ -18,6 +19,7 @@ const {
   selectedFurnitureDef,
   isTranslateMode,
   isRotateMode,
+  isMyRoom,
   loadRoom,
   handleSave,
   addFurniture,
@@ -61,9 +63,11 @@ onBeforeUnmount(() => destroy());
   <div class="room-app">
     <div ref="roomContainer" class="room-container" />
 
+    <LoginPanel />
+
     <Transition name="slide-left">
       <FurniturePanel
-        v-if="objectSelected"
+        v-if="objectSelected && isMyRoom"
         :furniture-name="selectedFurnitureName"
         :furniture-def="selectedFurnitureDef"
         :furniture-props="selectedFurnitureProps"
@@ -78,6 +82,7 @@ onBeforeUnmount(() => destroy());
     </Transition>
 
     <RoomSettingsPanel
+      v-if="isMyRoom"
       v-model:room-type="roomType"
       v-model:carpet-color="carpetColor"
       :picker-open="pickerState !== 'closed'"
