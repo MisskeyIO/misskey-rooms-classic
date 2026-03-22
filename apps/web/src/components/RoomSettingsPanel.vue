@@ -49,7 +49,7 @@ const emit = defineEmits<{
 <style scoped>
 .panel-right {
   position: absolute;
-  top: 0;
+  bottom: 16px;
   right: 0;
   z-index: 10;
   background: var(--panel-bg);
@@ -58,7 +58,7 @@ const emit = defineEmits<{
   width: 200px;
   color: var(--app-fg-strong);
   font-size: 13px;
-  border-radius: 0 0 0 8px;
+  border-radius: 8px 0 0 8px;
   display: flex;
   flex-direction: column;
   gap: 8px;

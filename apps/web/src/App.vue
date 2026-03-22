@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { ref, useTemplateRef, onMounted, onBeforeUnmount, computed } from "vue";
 import { useRoom } from "./composables/useRoom.ts";
+import { useDialog } from "./composables/useDialog.ts";
 import FurniturePanel from "./components/FurniturePanel.vue";
 import RoomSettingsPanel from "./components/RoomSettingsPanel.vue";
 import FurniturePicker from "./components/FurniturePicker.vue";
 import FloorNav from "./components/FloorNav.vue";
 import LoginPanel from "./components/LoginPanel.vue";
+import ToastNotification from "./components/ToastNotification.vue";
+import ConfirmDialog from "./components/ConfirmDialog.vue";
 
 const roomContainer = useTemplateRef<HTMLDivElement>("roomContainer");
+
+const { toasts, confirmState, showToast, removeToast, showConfirm, confirmDialog } = useDialog();
 
 // iframe検出
 const isIframe = computed(() => {
@@ -41,15 +46,12 @@ const {
   updateProp,
   changeFloor,
   destroy,
-} = useRoom(roomContainer);
+} = useRoom(roomContainer, { showToast, showConfirm });
 
 const pickerState = ref<"closed" | "loading" | "open">("closed");
 
 function openPicker() {
-  pickerState.value = "loading";
-  setTimeout(() => {
-    pickerState.value = "open";
-  }, 600);
+  pickerState.value = "open";
 }
 
 function togglePicker() {
@@ -104,6 +106,15 @@ onBeforeUnmount(() => destroy());
     <FurniturePicker :state="pickerState" @close="pickerState = 'closed'" @add="onPickerAdd" />
 
     <FloorNav :floor="floor" @change-floor="changeFloor" />
+
+    <ToastNotification
+      v-for="toast in toasts"
+      :key="toast.id"
+      :toast="toast"
+      @close="removeToast"
+    />
+
+    <ConfirmDialog :state="confirmState" @confirm="confirmDialog" />
   </div>
 </template>
 

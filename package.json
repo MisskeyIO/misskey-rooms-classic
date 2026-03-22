@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "ready": "vp fmt && vp lint && vp run build -r",
-    "dev": "vp run -r dev",
+    "dev": "concurrently 'vp run web#build' 'vp run api#dev'",
     "deploy": "vp run @misskey-rooms/web#build && vp run @misskey-rooms/api#deploy",
     "prepare": "vp config"
   },
   "devDependencies": {
+    "concurrently": "catalog:",
     "vite-plus": "catalog:"
   },
   "engines": {

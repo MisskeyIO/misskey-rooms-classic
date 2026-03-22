@@ -17,7 +17,7 @@ function getAuthToken(): string | null {
 }
 
 const link = new RPCLink({
-  url: "/rpc",
+  url: `${window.location.origin}/rpc`,
   adapterInterceptors: [
     (options) => {
       const token = getAuthToken();

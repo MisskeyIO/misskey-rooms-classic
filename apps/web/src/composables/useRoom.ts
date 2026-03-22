@@ -7,22 +7,36 @@ import { furnitureDefs } from "@misskey-rooms/shared";
 import { orpc } from "./useApi.ts";
 import { useAuth } from "./useAuth.ts";
 
+interface DialogHandlers {
+  showToast: (message: string, type?: "success" | "error") => void;
+  showConfirm: (
+    message: string,
+    options?: { title?: string; confirmText?: string; cancelText?: string },
+  ) => Promise<boolean>;
+}
+
+const DEV_PREVIEW_USER_ID = "__dev_preview__";
+
 function getParams() {
   const path = location.pathname.replace(/^\/+|\/+$/g, "");
   const params = new URLSearchParams(location.search);
   return {
-    userId: path || "default",
+    userId: path || null,
     floor: Number(params.get("floor") ?? "0"),
   };
 }
 
-export function useRoom(roomContainer: Ref<HTMLDivElement | null>) {
-  const { userId: initUserId, floor: initFloor } = getParams();
+export function useRoom(roomContainer: Ref<HTMLDivElement | null>, dialog: DialogHandlers) {
+  const { userId: initUserIdOrNull, floor: initFloor } = getParams();
   const { currentUser } = useAuth();
+  const isDevPreview = import.meta.env.DEV && initUserIdOrNull === null;
+  const { showToast, showConfirm } = dialog;
 
-  const userId = ref(initUserId);
+  const userId = ref(initUserIdOrNull ?? currentUser.value?.userId ?? null);
   const floor = ref(initFloor);
-  const isMyRoom = computed(() => currentUser.value?.userId === userId.value);
+  const isMyRoom = computed(
+    () => userId.value !== null && currentUser.value?.userId === userId.value,
+  );
   const quality = ref<GraphicsQuality>("medium");
   const roomType = ref("default");
   const carpetColor = ref("#85CAF0");
@@ -70,14 +84,24 @@ export function useRoom(roomContainer: Ref<HTMLDivElement | null>) {
   }
 
   async function loadRoom() {
+    if (initUserIdOrNull === null) {
+      if (currentUser.value) {
+        userId.value = currentUser.value.userId;
+      } else if (isDevPreview) {
+        userId.value = DEV_PREVIEW_USER_ID;
+      } else {
+        return;
+      }
+    }
     try {
-      const roomInfo = await orpc.getRoom({ userId: userId.value, floor: floor.value });
+      const roomInfo = await orpc.getRoom({ userId: userId.value!, floor: floor.value });
       initRoom(roomInfo);
-      const newPath = `/${encodeURIComponent(userId.value)}${floor.value !== 0 ? `?floor=${floor.value}` : ""}`;
+      const newPath = isDevPreview
+        ? `/${floor.value !== 0 ? `?floor=${floor.value}` : ""}`
+        : `/${encodeURIComponent(userId.value!)}${floor.value !== 0 ? `?floor=${floor.value}` : ""}`;
       history.replaceState(null, "", newPath);
     } catch (e) {
       console.error(e);
-      initRoom({ roomType: "default", carpetColor: "#85CAF0", furnitures: [] });
     }
   }
 
@@ -85,13 +109,13 @@ export function useRoom(roomContainer: Ref<HTMLDivElement | null>) {
     if (!currentRoom) return;
     try {
       await orpc.saveRoom({
-        userId: userId.value,
+        userId: userId.value!,
         floor: floor.value,
         room: currentRoom.getRoomInfo(),
       });
-      alert("保存しました");
+      showToast("保存しました", "success");
     } catch (e) {
-      alert("保存に失敗しました: " + (e instanceof Error ? e.message : e));
+      showToast("保存に失敗しました: " + (e instanceof Error ? e.message : e), "error");
     }
   }
 
@@ -131,8 +155,13 @@ export function useRoom(roomContainer: Ref<HTMLDivElement | null>) {
     currentRoom?.removeFurniture();
   }
 
-  function clearAll() {
-    if (confirm("全ての家具を削除しますか？")) {
+  async function clearAll() {
+    const confirmed = await showConfirm("全ての家具を削除しますか？", {
+      title: "確認",
+      confirmText: "削除する",
+      cancelText: "キャンセル",
+    });
+    if (confirmed) {
       currentRoom?.removeAllFurnitures();
     }
   }

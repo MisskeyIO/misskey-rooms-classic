@@ -33,7 +33,7 @@ const emit = defineEmits<{
 .floor-nav {
   position: absolute;
   bottom: 16px;
-  right: 16px;
+  left: 16px;
   z-index: 10;
   background: var(--panel-bg);
   backdrop-filter: blur(6px);

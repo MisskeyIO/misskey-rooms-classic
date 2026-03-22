@@ -96,7 +96,7 @@ export function registerAuthRoutes(app: Hono<{ Bindings: Env }>) {
       return c.json({ error: "SSO not configured" }, 503);
     }
     const ssoUrl =
-      `${c.env.SSO_ISSUER}/sso/jwt/${serviceId}` + `?return_to=${encodeURIComponent(returnTo)}`;
+      `${c.env.SSO_ISSUER}/sso/jwt/${serviceId!}` + `?return_to=${encodeURIComponent(returnTo)}`;
     return c.redirect(ssoUrl);
   });
 
@@ -124,7 +124,7 @@ export function registerAuthRoutes(app: Hono<{ Bindings: Env }>) {
     }
 
     return c.json({
-      jwt,
+      token: jwt,
       userId: payload.preferred_username,
       name: payload.name,
       picture: payload.picture ?? null,

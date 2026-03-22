@@ -3,7 +3,7 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import AuthCallback from "./AuthCallback.vue";
 
-const root = location.pathname === "/auth/callback" ? AuthCallback : App;
+const root = location.pathname === "/callback" ? AuthCallback : App;
 
 const colorSchemeQuery = window.matchMedia("(prefers-color-scheme: dark)");
 

@@ -4,7 +4,7 @@ import { useAuth } from "./composables/useAuth.ts";
 import LoadingSpinner from "./components/LoadingSpinner.vue";
 import BaseButton from "./components/BaseButton.vue";
 
-const { handleJwtCallback } = useAuth();
+const { handleJwtCallback, isLoggedIn, currentUser } = useAuth();
 const status = ref<"processing" | "error">("processing");
 
 function isValidRedirectUrl(url: string): boolean {
@@ -27,8 +27,12 @@ onMounted(async () => {
   if (jwt) {
     const ok = await handleJwtCallback(jwt);
     if (ok) {
-      const safeReturnTo = isValidRedirectUrl(returnTo) ? returnTo : "/";
-      location.replace(safeReturnTo);
+      let dest = isValidRedirectUrl(returnTo) ? returnTo : "/";
+      // / のままなら自分のルームへ飛ばす
+      if (dest === "/" && isLoggedIn.value && currentUser.value) {
+        dest = `/${encodeURIComponent(currentUser.value.userId)}`;
+      }
+      location.replace(dest);
       return;
     }
   }

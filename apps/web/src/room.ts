@@ -191,13 +191,14 @@ export class Room {
     this.controls = new OrbitControls(this.camera, this.canvas);
     this.controls.target.set(0, 1, 0);
     this.controls.enableZoom = true;
+    this.controls.zoomSpeed = 3.0;
     this.controls.enablePan = options.isMyRoom;
     this.controls.minPolarAngle = 0;
     this.controls.maxPolarAngle = Math.PI / 2;
     this.controls.minAzimuthAngle = 0;
     this.controls.maxAzimuthAngle = Math.PI / 2;
     this.controls.enableDamping = true;
-    this.controls.dampingFactor = 0.2;
+    this.controls.dampingFactor = 0.6;
     // 元の Misskey と同じ配置: 左=ズーム, 中=パン, 右=回転
     this.controls.mouseButtons.LEFT = THREE.MOUSE.DOLLY;
     this.controls.mouseButtons.MIDDLE = THREE.MOUSE.PAN;

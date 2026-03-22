@@ -2,12 +2,17 @@ name = "misskey-rooms-classic"
 main = "src/index.ts"
 compatibility_date = "2026-03-21"
 
-assets = { directory = "../../dist", not_found_handling = "single-page-application" }
+[assets]
+directory = "../../dist"
+not_found_handling = "single-page-application"
+run_worker_first = ["/auth/*", "/rpc/*"]
 
 [[kv_namespaces]]
 binding = "MISSKEY_ROOMS"
 id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" # wrangler kv:namespace create MISSKEY_ROOMS で取得した値に差し替え
 
 [vars]
-SSO_SERVICE_ID = ""
-SSO_ISSUER = "https://misskey.io"
+SSO_SERVICE_ID = "13bff00d-c79b-4677-875f-eb35a602dfa5"
+SSO_ISSUER = "https://next.misskey.io"
+SSO_AUDIENCE = "4d3f38d3-a126-456b-9f52-aa3eb8d8c633"
+SSO_JWT_PUBLIC_KEY = '{"kty":"RSA","n":"qYHLvT5NZ4Ojyiyj4XADVwYsMKnB2YomDqxrdlKGHZRthmMCdSlwXKjw4HIQKV3lpZOskvUHahrSX20z_s4LZnaPi7mAzxO4curdlhihsuElJGRoW82oWd2T1cSO6oUltyeYQbe1VksXn29Bsk3Qr7wO5DFLoW9Aq9pH-f6dXlwzmvrcYR61NIbMCXbB14gfAqacQCfwxJ99db1SvJFcPBXK3h-dF3biZDjEN7bDfleT8jjbOJ555oan-fhQevoA9rZ5L5_Q031e9tfk18_d2BkZVemqUmwuN60Yikqkx44YYJo03SsgWWjS6Y5G0QnGIShXCwyCID74PFw44q45Tw","e":"AQAB"}'
