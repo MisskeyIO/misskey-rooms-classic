@@ -9,4 +9,4 @@ run_worker_first = ["/auth/*", "/rpc/*"]
 
 [[kv_namespaces]]
 binding = "MISSKEY_ROOMS"
-id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" # wrangler kv:namespace create MISSKEY_ROOMS で取得した値に差し替え
+id = "69d273f159d84475b9deb8da0331e1b3"
