@@ -87,10 +87,15 @@ export function useRoom(roomContainer: Ref<HTMLDivElement | null>, dialog: Dialo
     if (initUserIdOrNull === null) {
       if (currentUser.value) {
         userId.value = currentUser.value.userId;
-      } else if (isDevPreview) {
-        userId.value = DEV_PREVIEW_USER_ID;
       } else {
-        return;
+        // ログインしていない場合、ランダムなユーザーのルームを取得
+        try {
+          const { userId: randomUserId } = await orpc.getRandomUser({});
+          userId.value = randomUserId;
+        } catch (e) {
+          console.error("Failed to get random user:", e);
+          return;
+        }
       }
     }
     try {
