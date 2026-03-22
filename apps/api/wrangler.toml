@@ -1,6 +1,8 @@
 name = "misskey-rooms-classic"
 main = "src/index.ts"
 compatibility_date = "2026-03-21"
+preview_urls = false
+workers_dev = false
 
 [assets]
 directory = "../../dist"
@@ -10,3 +12,9 @@ run_worker_first = ["/auth/*", "/rpc/*"]
 [[kv_namespaces]]
 binding = "MISSKEY_ROOMS"
 id = "69d273f159d84475b9deb8da0331e1b3"
+
+[vars]
+SSO_SERVICE_ID = "365a1494-e1c2-46a2-b7c8-d13eed0e914c"
+SSO_ISSUER = "https://next.misskey.io"
+SSO_AUDIENCE = "11cfd8f2-63e7-46ca-af25-846c15ad13ba"
+SSO_JWT_PUBLIC_KEY = '{"kty":"RSA","n":"vCC3f-JA3DxscTjC4pIO36igK334ezHijMBNwTQaPce120vSsHM5EhHQrVlACwP8evY2NVUIMY0-W0-Zf-6BgAzBSaIq9Ik4pUatbVd3jdbhZ8iRTmEA3ftYqCcVGg3WGGK8tO-_TCQyBLE4GPpJ9VQWaUkdCsZ73KmRr--uUR6Q1BY3Gt8g9NrIp6fNjk0w6Fm0Ik1iY80OkT8PcxUhpQJTgN0h9Mnty-QeaB7EoJkXIQZAZW8ULSksHNP8IDkqQuvp38E6YQZlJFfGJPcMGkyGPk6xEbDfayFpg6w8o2Tq1Ub9wOp8-_fehdxWkzKYuyP9teQuIkDP9NlcD9PxAQ","e":"AQAB"}'
