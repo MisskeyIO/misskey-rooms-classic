@@ -15,25 +15,36 @@ interface DialogHandlers {
   ) => Promise<boolean>;
 }
 
-const DEV_PREVIEW_USER_ID = "__dev_preview__";
+type RoomRouteState = {
+  userId: string | null;
+  floor: number;
+};
 
-function getParams() {
+function normalizeFloor(value: string | null): number {
+  const parsed = Number(value ?? "0");
+  return Number.isInteger(parsed) ? parsed : 0;
+}
+
+function getRouteState(): RoomRouteState {
   const path = location.pathname.replace(/^\/+|\/+$/g, "");
   const params = new URLSearchParams(location.search);
   return {
     userId: path || null,
-    floor: Number(params.get("floor") ?? "0"),
+    floor: normalizeFloor(params.get("floor")),
   };
 }
 
+function buildRoomPath(userId: string, floor: number): string {
+  return `/${encodeURIComponent(userId)}${floor !== 0 ? `?floor=${floor}` : ""}`;
+}
+
 export function useRoom(roomContainer: Ref<HTMLDivElement | null>, dialog: DialogHandlers) {
-  const { userId: initUserIdOrNull, floor: initFloor } = getParams();
+  const initialRoute = getRouteState();
   const { currentUser } = useAuth();
-  const isDevPreview = import.meta.env.DEV && initUserIdOrNull === null;
   const { showToast, showConfirm } = dialog;
 
-  const userId = ref(initUserIdOrNull ?? currentUser.value?.userId ?? null);
-  const floor = ref(initFloor);
+  const userId = ref(initialRoute.userId);
+  const floor = ref(initialRoute.floor);
   const isMyRoom = computed(
     () => userId.value !== null && currentUser.value?.userId === userId.value,
   );
@@ -48,6 +59,10 @@ export function useRoom(roomContainer: Ref<HTMLDivElement | null>, dialog: Dialo
   const isRotateMode = ref(false);
 
   let currentRoom: Room | null = null;
+  let loadSequence = 0;
+  const handlePopState = () => {
+    void loadRoom();
+  };
 
   function initRoom(roomInfo: RoomInfo) {
     if (currentRoom) {
@@ -83,28 +98,41 @@ export function useRoom(roomContainer: Ref<HTMLDivElement | null>, dialog: Dialo
     });
   }
 
+  function syncRoute(route: RoomRouteState) {
+    userId.value = route.userId;
+    floor.value = route.floor;
+  }
+
+  function updateUrl() {
+    if (!userId.value) return;
+    history.replaceState(null, "", buildRoomPath(userId.value, floor.value));
+  }
+
   async function loadRoom() {
-    if (initUserIdOrNull === null) {
-      if (currentUser.value) {
-        userId.value = currentUser.value.userId;
-      } else {
-        // ログインしていない場合、ランダムなユーザーのルームを取得
-        try {
-          const { userId: randomUserId } = await orpc.getRandomUser({});
-          userId.value = randomUserId;
-        } catch (e) {
-          console.error("Failed to get random user:", e);
-          return;
-        }
+    const sequence = ++loadSequence;
+    syncRoute(getRouteState());
+
+    if (userId.value === null) {
+      try {
+        const { userId: randomUserId } = await orpc.getRandomUser({});
+        if (sequence !== loadSequence) return;
+        userId.value = randomUserId;
+        updateUrl();
+      } catch (e) {
+        console.error("Failed to get random user:", e);
+        return;
       }
     }
+
     try {
-      const roomInfo = await orpc.getRoom({ userId: userId.value!, floor: floor.value });
+      const resolvedUserId = userId.value;
+      if (!resolvedUserId) return;
+
+      const roomInfo = await orpc.getRoom({ userId: resolvedUserId, floor: floor.value });
+      if (sequence !== loadSequence) return;
+
       initRoom(roomInfo);
-      const newPath = isDevPreview
-        ? `/${floor.value !== 0 ? `?floor=${floor.value}` : ""}`
-        : `/${encodeURIComponent(userId.value!)}${floor.value !== 0 ? `?floor=${floor.value}` : ""}`;
-      history.replaceState(null, "", newPath);
+      updateUrl();
     } catch (e) {
       console.error(e);
     }
@@ -177,13 +205,19 @@ export function useRoom(roomContainer: Ref<HTMLDivElement | null>, dialog: Dialo
 
   async function changeFloor(delta: number) {
     floor.value += delta;
+    if (userId.value) {
+      history.replaceState(null, "", buildRoomPath(userId.value, floor.value));
+    }
     await loadRoom();
   }
 
   function destroy() {
+    window.removeEventListener("popstate", handlePopState);
     currentRoom?.destroy();
     currentRoom = null;
   }
+
+  window.addEventListener("popstate", handlePopState);
 
   watch(quality, () => {
     if (!currentRoom) return;
