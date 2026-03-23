@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 import { orpc } from "../composables/useApi.ts";
 
 const props = defineProps<{
@@ -39,9 +39,14 @@ watch(
 <template>
   <div v-if="userId" class="room-owner-card">
     <div class="owner-content">
-      <img v-if="userInfo?.avatarUrl" :src="userInfo.avatarUrl" class="owner-avatar" />
-      <span class="owner-name">{{ userInfo?.name ?? userId }}</span>
-      <span class="room-label">の部屋</span>
+      <div class="avatar-container">
+        <img v-if="userInfo?.avatarUrl" :src="userInfo.avatarUrl" class="owner-avatar" />
+        <div v-else class="owner-avatar-placeholder"></div>
+      </div>
+      <div class="owner-info">
+        <span class="owner-name">{{ userInfo?.name ?? userId }}</span>
+        <span class="owner-acct">@{{ userId }}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -49,43 +54,66 @@ watch(
 <style scoped>
 .room-owner-card {
   position: absolute;
-  top: 64px;
-  right: 12px;
+  top: 16px;
+  left: 16px;
   background: var(--panel-bg);
   backdrop-filter: blur(8px);
-  border-radius: 12px;
+  border-radius: 8px;
   padding: 12px 16px;
   z-index: 90;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-  width: 10vw;
+  border: 1px solid var(--divider);
 }
 
 .owner-content {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
-  gap: 6px;
+  gap: 12px;
+}
+
+.avatar-container {
+  flex-shrink: 0;
 }
 
 .owner-avatar {
-  width: 64px;
-  height: 64px;
-  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
   object-fit: cover;
+  display: block;
+}
+
+.owner-avatar-placeholder {
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  background: var(--bg);
+}
+
+.owner-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
 }
 
 .owner-name {
-  font-weight: 600;
+  font-weight: 700;
   color: var(--app-fg-strong);
-  font-size: 14px;
-  text-align: center;
-  word-break: break-all;
-  max-width: 300px;
+  font-size: 15px;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 200px;
 }
 
-.room-label {
+.owner-acct {
   color: var(--app-fg);
-  font-size: 12px;
-  opacity: 0.8;
+  font-size: 13px;
+  opacity: 0.7;
+  line-height: 1.3;
+  font-weight: 500;
 }
 </style>

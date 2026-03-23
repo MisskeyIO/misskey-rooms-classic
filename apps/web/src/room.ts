@@ -18,6 +18,11 @@ export type RoomOptions = {
   onChangeSelect: (obj: THREE.Object3D | null) => void;
   useOrthographicCamera: boolean;
   isMyRoom: boolean;
+  user?: {
+    id: string;
+    username: string;
+    avatarUrl: string | null;
+  };
 };
 
 export class Room {
@@ -140,15 +145,15 @@ export class Room {
     // Three.js r155+ uses physically-based light units by default.
     // SpotLight intensity is now in candela; AmbientLight/HemisphereLight are unaffected.
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 1.2);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     this.scene.add(ambientLight);
 
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x888888, 0.8);
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x888888, 0.5);
     hemiLight.position.set(0, 8, 0);
     this.scene.add(hemiLight);
 
     if (this.graphicsQuality !== "cheep") {
-      const roomLight = new THREE.SpotLight(0xffffff, 180);
+      const roomLight = new THREE.SpotLight(0xffffff, 100);
       roomLight.decay = 2;
       roomLight.position.set(0, 8, 0);
       roomLight.castShadow = this.enableShadow;
@@ -162,7 +167,7 @@ export class Room {
       this.scene.add(roomLight.target);
     }
 
-    const outLight1 = new THREE.SpotLight(0xffffff, 400);
+    const outLight1 = new THREE.SpotLight(0xffffff, 320);
     outLight1.decay = 2;
     outLight1.position.set(9, 3, -2);
     outLight1.castShadow = this.enableShadow;
@@ -175,7 +180,7 @@ export class Room {
     this.scene.add(outLight1);
     this.scene.add(outLight1.target);
 
-    const outLight2 = new THREE.SpotLight(0xffffff, 200);
+    const outLight2 = new THREE.SpotLight(0xffffff, 160);
     outLight2.decay = 2;
     outLight2.position.set(-2, 3, 9);
     outLight2.castShadow = false;
@@ -248,6 +253,10 @@ export class Room {
       this.canvas.addEventListener("pointerdown", (ev) => this.onPointerDown(ev));
     }
     //#endregion
+
+    if (options.user) {
+      this.renderUserLabel(options.user);
+    }
 
     // Load room & furnitures
     this.loadRoom();
@@ -651,6 +660,77 @@ export class Room {
 
   public findFurnitureById(id: string) {
     return this.furnitures.find((f) => f.id === id);
+  }
+
+  private renderUserLabel(user: { id: string; username: string; avatarUrl: string | null }) {
+    if (user.avatarUrl) {
+      const textureLoader = new THREE.TextureLoader();
+      textureLoader.crossOrigin = "anonymous";
+
+      const iconTexture = textureLoader.load(user.avatarUrl);
+      iconTexture.wrapS = THREE.RepeatWrapping;
+      iconTexture.wrapT = THREE.RepeatWrapping;
+      iconTexture.anisotropy = 16;
+
+      const avatarMaterial = new THREE.MeshBasicMaterial({
+        map: iconTexture,
+        side: THREE.DoubleSide,
+        alphaTest: 0.5,
+      });
+
+      const iconGeometry = new THREE.PlaneGeometry(1.5, 1.5);
+
+      const avatarObject = new THREE.Mesh(iconGeometry, avatarMaterial);
+      avatarObject.position.set(-3, 2.7, 2);
+      avatarObject.rotation.y = Math.PI / 2;
+      avatarObject.castShadow = false;
+
+      this.scene.add(avatarObject);
+    }
+
+    const nameCanvas = document.createElement("canvas");
+    const ctx = nameCanvas.getContext("2d")!;
+    const fontSize = 64;
+
+    ctx.font = `bold ${fontSize}px "Helvetica Neue", Arial, sans-serif`;
+    const textMetrics = ctx.measureText(user.username);
+
+    const padding = 24;
+    const canvasWidth = Math.ceil(textMetrics.width) + padding * 2;
+    const canvasHeight = fontSize + padding * 2;
+
+    nameCanvas.width = canvasWidth;
+    nameCanvas.height = canvasHeight;
+
+    ctx.font = `bold ${fontSize}px "Helvetica Neue", Arial, sans-serif`;
+    ctx.fillStyle = "white";
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "left";
+    ctx.fillText(user.username, padding, canvasHeight / 2);
+
+    const nameTexture = new THREE.CanvasTexture(nameCanvas);
+    nameTexture.needsUpdate = true;
+    nameTexture.minFilter = THREE.LinearFilter;
+    nameTexture.magFilter = THREE.LinearFilter;
+
+    const nameMaterial = new THREE.MeshBasicMaterial({
+      map: nameTexture,
+      transparent: true,
+      side: THREE.DoubleSide,
+      alphaTest: 0.1,
+    });
+
+    const aspectRatio = canvasWidth / canvasHeight;
+    const planeHeight = 1.0;
+    const planeWidth = planeHeight * aspectRatio;
+
+    const nameGeometry = new THREE.PlaneGeometry(planeWidth, planeHeight);
+    const nameObject = new THREE.Mesh(nameGeometry, nameMaterial);
+    nameObject.position.set(-3, 2.7, -1.2);
+    nameObject.rotation.y = Math.PI / 2;
+    nameObject.castShadow = false;
+
+    this.scene.add(nameObject);
   }
 
   public destroy() {

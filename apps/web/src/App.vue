@@ -7,7 +7,6 @@ import RoomSettingsPanel from "./components/RoomSettingsPanel.vue";
 import FurniturePicker from "./components/FurniturePicker.vue";
 import FloorNav from "./components/FloorNav.vue";
 import LoginPanel from "./components/LoginPanel.vue";
-import RoomOwnerCard from "./components/RoomOwnerCard.vue";
 import ToastNotification from "./components/ToastNotification.vue";
 import ConfirmDialog from "./components/ConfirmDialog.vue";
 import ServiceEndOverlay from "./components/ServiceEndOverlay.vue";
@@ -89,8 +88,6 @@ onBeforeUnmount(() => destroy());
     <div ref="roomContainer" class="room-container" />
 
     <LoginPanel />
-
-    <RoomOwnerCard :user-id="userId" />
 
     <Transition name="slide-left">
       <FurniturePanel

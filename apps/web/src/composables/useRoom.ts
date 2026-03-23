@@ -64,7 +64,7 @@ export function useRoom(roomContainer: Ref<HTMLDivElement | null>, dialog: Dialo
     void loadRoom();
   };
 
-  function initRoom(roomInfo: RoomInfo) {
+  async function initRoom(roomInfo: RoomInfo) {
     if (currentRoom) {
       currentRoom.destroy();
       roomContainer.value!.replaceChildren();
@@ -73,10 +73,25 @@ export function useRoom(roomContainer: Ref<HTMLDivElement | null>, dialog: Dialo
     roomType.value = roomInfo.roomType;
     carpetColor.value = roomInfo.carpetColor;
 
+    let user: { id: string; username: string; avatarUrl: string | null } | undefined;
+    if (userId.value) {
+      try {
+        const userInfo = await orpc.getUserInfo({ userId: userId.value });
+        user = {
+          id: userInfo.userId,
+          username: userInfo.name || userInfo.userId,
+          avatarUrl: userInfo.avatarUrl,
+        };
+      } catch (e) {
+        console.error("Failed to fetch user info:", e);
+      }
+    }
+
     currentRoom = new Room(roomInfo, roomContainer.value!, {
       graphicsQuality: quality.value,
       isMyRoom: isMyRoom.value,
-      useOrthographicCamera: false,
+      useOrthographicCamera: true,
+      user,
       onChangeSelect: (obj) => {
         if (obj) {
           objectSelected.value = true;
@@ -134,7 +149,7 @@ export function useRoom(roomContainer: Ref<HTMLDivElement | null>, dialog: Dialo
       const roomInfo = await orpc.getRoom({ userId: resolvedUserId, floor: floor.value });
       if (sequence !== loadSequence) return;
 
-      initRoom(roomInfo);
+      await initRoom(roomInfo);
       updateUrl();
     } catch (e) {
       console.error(e);
@@ -225,13 +240,13 @@ export function useRoom(roomContainer: Ref<HTMLDivElement | null>, dialog: Dialo
   watch(quality, () => {
     if (!currentRoom) return;
     const info = currentRoom.getRoomInfo();
-    initRoom(info);
+    void initRoom(info);
   });
 
   watch(isMyRoom, () => {
     if (!currentRoom) return;
     const info = currentRoom.getRoomInfo();
-    initRoom(info);
+    void initRoom(info);
   });
 
   watch(roomType, (type) => {
