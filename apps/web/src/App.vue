@@ -51,7 +51,7 @@ const {
 
 const pickerState = ref<"closed" | "loading" | "open">("closed");
 
-const showServiceEndOverlay = ref(true);
+const showServiceEndOverlay = ref(false);
 
 function openPicker() {
   pickerState.value = "open";
