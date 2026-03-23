@@ -132,7 +132,7 @@ export class Room {
 
     if (options.useOrthographicCamera) {
       this.camera.position.set(2, 2, 2);
-      (this.camera as THREE.OrthographicCamera).zoom = 100;
+      (this.camera as THREE.OrthographicCamera).zoom = 120;
       this.camera.updateProjectionMatrix();
     } else {
       this.camera.position.set(5, 2, 5);
@@ -145,15 +145,15 @@ export class Room {
     // Three.js r155+ uses physically-based light units by default.
     // SpotLight intensity is now in candela; AmbientLight/HemisphereLight are unaffected.
 
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 1.1);
     this.scene.add(ambientLight);
 
-    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x888888, 0.5);
+    const hemiLight = new THREE.HemisphereLight(0xffffff, 0x888888, 0.72);
     hemiLight.position.set(0, 8, 0);
     this.scene.add(hemiLight);
 
     if (this.graphicsQuality !== "cheep") {
-      const roomLight = new THREE.SpotLight(0xffffff, 100);
+      const roomLight = new THREE.SpotLight(0xffffff, 130);
       roomLight.decay = 2;
       roomLight.position.set(0, 8, 0);
       roomLight.castShadow = this.enableShadow;
@@ -167,7 +167,7 @@ export class Room {
       this.scene.add(roomLight.target);
     }
 
-    const outLight1 = new THREE.SpotLight(0xffffff, 320);
+    const outLight1 = new THREE.SpotLight(0xffffff, 295);
     outLight1.decay = 2;
     outLight1.position.set(9, 3, -2);
     outLight1.castShadow = this.enableShadow;
@@ -180,7 +180,7 @@ export class Room {
     this.scene.add(outLight1);
     this.scene.add(outLight1.target);
 
-    const outLight2 = new THREE.SpotLight(0xffffff, 160);
+    const outLight2 = new THREE.SpotLight(0xffffff, 148);
     outLight2.decay = 2;
     outLight2.position.set(-2, 3, 9);
     outLight2.castShadow = false;
