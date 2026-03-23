@@ -50,4 +50,12 @@ export const contract = {
     .output(z.object({ ok: z.literal(true) })),
 
   getRandomUser: oc.input(z.object({})).output(z.object({ userId: z.string() })),
+
+  getUserInfo: oc.input(z.object({ userId: z.string() })).output(
+    z.object({
+      userId: z.string(),
+      name: z.string(),
+      avatarUrl: z.string().nullable(),
+    }),
+  ),
 };
