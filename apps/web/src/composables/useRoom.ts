@@ -112,7 +112,7 @@ export function useRoom(roomContainer: Ref<HTMLDivElement | null>, dialog: Dialo
     const sequence = ++loadSequence;
     syncRoute(getRouteState());
 
-    if (userId.value === null) {
+    if (userId.value === null && currentUser.value === null) {
       try {
         const { userId: randomUserId } = await orpc.getRandomUser({});
         if (sequence !== loadSequence) return;
@@ -122,6 +122,9 @@ export function useRoom(roomContainer: Ref<HTMLDivElement | null>, dialog: Dialo
         console.error("Failed to get random user:", e);
         return;
       }
+    } else if (userId.value === null && currentUser.value !== null) {
+      userId.value = currentUser.value.userId;
+      updateUrl();
     }
 
     try {

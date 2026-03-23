@@ -9,6 +9,7 @@ import FloorNav from "./components/FloorNav.vue";
 import LoginPanel from "./components/LoginPanel.vue";
 import ToastNotification from "./components/ToastNotification.vue";
 import ConfirmDialog from "./components/ConfirmDialog.vue";
+import ServiceEndOverlay from "./components/ServiceEndOverlay.vue";
 
 const roomContainer = useTemplateRef<HTMLDivElement>("roomContainer");
 
@@ -50,6 +51,8 @@ const {
 
 const pickerState = ref<"closed" | "loading" | "open">("closed");
 
+const showServiceEndOverlay = ref(true);
+
 function openPicker() {
   pickerState.value = "open";
 }
@@ -67,12 +70,20 @@ function onPickerAdd(id: string) {
   pickerState.value = "closed";
 }
 
-onMounted(() => loadRoom());
+onMounted(() => {
+  loadRoom();
+
+  const now = new Date();
+  const endDate = new Date("2026-04-30T23:59:59+09:00");
+  if (now > endDate) {
+    showServiceEndOverlay.value = true;
+  }
+});
 onBeforeUnmount(() => destroy());
 </script>
 
 <template>
-  <div class="room-app" :class="{ 'is-iframe': isIframe }">
+  <div v-if="!showServiceEndOverlay" class="room-app" :class="{ 'is-iframe': isIframe }">
     <div ref="roomContainer" class="room-container" />
 
     <LoginPanel />
@@ -116,6 +127,7 @@ onBeforeUnmount(() => destroy());
 
     <ConfirmDialog :state="confirmState" @confirm="confirmDialog" />
   </div>
+  <ServiceEndOverlay v-if="showServiceEndOverlay" />
 </template>
 
 <style scoped>

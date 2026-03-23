@@ -6,6 +6,17 @@ import { registerAuthRoutes } from "./libs/auth.ts";
 
 const app = new Hono<{ Bindings: Env }>();
 
+app.use(async (c, next) => {
+  const now = new Date();
+  const endDate = new Date("2026-04-30T23:59:59+09:00");
+
+  if (now > endDate) {
+    return c.json({ error: "Service ended" }, 410);
+  }
+
+  return next();
+});
+
 registerAuthRoutes(app);
 
 const rpcHandler = new RPCHandler(router, {
