@@ -5,22 +5,23 @@ packages:
 approveBuilds: esbuild,workerd,sharp
 
 catalog:
-  "@orpc/client": latest
-  "@orpc/contract": ^1.13.9
-  "@orpc/server": latest
-  "@tabler/icons-vue": ^3.40.0
+  "@orpc/client": ^1.13.13
+  "@orpc/contract": ^1.13.13
+  "@orpc/server": ^1.13.13
+  "@tabler/icons-vue": ^3.41.1
   "@types/three": ^0.183.1
   "@types/uuid": ^11.0.0
   "@vitejs/plugin-vue": ^6.0.5
   concurrently: ^9.2.1
-  hono: ^4.12.8
+  hono: ^4.12.10
   three: ^0.183.2
-  typescript: ~5.9.3
+  typescript: ~6.0.2
   uuid: ^13.0.0
   vite: npm:@voidzero-dev/vite-plus-core@latest
-  vite-plus: latest
+  vite-plus: ^0.1.15
   vitest: npm:@voidzero-dev/vite-plus-test@latest
-  vue: ^3.5.30
+  vue: ^3.5.32
+  wrangler: ^4.80.0
   zod: latest
 
 catalogMode: prefer

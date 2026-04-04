@@ -92,11 +92,11 @@ export function registerAuthRoutes(app: Hono<{ Bindings: Env }>) {
   app.get("/auth/login", (c) => {
     const returnTo = c.req.query("return_to") ?? "/";
     const serviceId = c.env.SSO_SERVICE_ID;
-    if (!serviceId) {
+    const issuer = c.env.SSO_ISSUER;
+    if (!serviceId || !issuer) {
       return c.json({ error: "SSO not configured" }, 503);
     }
-    const ssoUrl =
-      `${c.env.SSO_ISSUER}/sso/jwt/${serviceId!}` + `?return_to=${encodeURIComponent(returnTo)}`;
+    const ssoUrl = `${issuer}/sso/jwt/${serviceId}` + `?return_to=${encodeURIComponent(returnTo)}`;
     return c.redirect(ssoUrl);
   });
 

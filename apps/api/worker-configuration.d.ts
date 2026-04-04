@@ -7,8 +7,8 @@ declare namespace Cloudflare {
   }
   interface Env {
     MISSKEY_ROOMS: KVNamespace;
-    SSO_SERVICE_ID: "";
-    SSO_ISSUER: "https://misskey.io";
+    SSO_SERVICE_ID: string;
+    SSO_ISSUER: string;
     SSO_AUDIENCE: string;
     SSO_JWT_PUBLIC_KEY: string;
   }
