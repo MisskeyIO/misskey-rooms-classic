@@ -1,6 +1,7 @@
 name = "misskey-rooms-classic"
 main = "src/index.ts"
 compatibility_date = "2026-03-21"
+account_id = "fdc50ad77edabc41c26837cdce141551"
 preview_urls = false
 workers_dev = false
 
