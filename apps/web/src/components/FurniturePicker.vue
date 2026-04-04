@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { furnitureDefs } from "@misskey-rooms/shared";
-import FurniturePreview from "./FurniturePreview.vue";
 import LoadingSpinner from "./LoadingSpinner.vue";
 
 defineProps<{
@@ -31,7 +30,13 @@ const emit = defineEmits<{
             @click="emit('add', f.id)"
           >
             <div class="picker-preview">
-              <FurniturePreview :furniture-id="f.id" />
+              <img
+                :src="`/room/furnitures/${f.id}/thumbnail.png`"
+                :alt="f.name"
+                class="preview-image"
+                loading="lazy"
+                draggable="false"
+              />
             </div>
             <span>{{ f.name }}</span>
           </button>
@@ -121,6 +126,13 @@ const emit = defineEmits<{
   overflow: hidden;
   background: var(--preview-bg);
   pointer-events: none;
+}
+
+.preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .fade-enter-active,

@@ -87,7 +87,7 @@ onBeforeUnmount(() => destroy());
   <div v-if="!showServiceEndOverlay" class="room-app" :class="{ 'is-iframe': isIframe }">
     <div ref="roomContainer" class="room-container" />
 
-    <LoginPanel />
+    <LoginPanel :is-my-room="isMyRoom" />
 
     <Transition name="slide-left">
       <FurniturePanel
