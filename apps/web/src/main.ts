@@ -2,6 +2,14 @@ import "./style.css";
 import { createApp } from "vue";
 import App from "./App.vue";
 import AuthCallback from "./AuthCallback.vue";
+import { loadAuthState } from "./composables/useAuth.ts";
+
+const authState = loadAuthState();
+const shouldRedirectToLogin = location.pathname === "/" && authState === null;
+
+if (shouldRedirectToLogin) {
+  location.replace(`/auth/login?return_to=${encodeURIComponent("/")}`);
+}
 
 const root = location.pathname === "/callback" ? AuthCallback : App;
 
@@ -14,4 +22,6 @@ function syncThemeFromSystem() {
 syncThemeFromSystem();
 colorSchemeQuery.addEventListener("change", syncThemeFromSystem);
 
-createApp(root).mount("#app");
+if (!shouldRedirectToLogin) {
+  createApp(root).mount("#app");
+}

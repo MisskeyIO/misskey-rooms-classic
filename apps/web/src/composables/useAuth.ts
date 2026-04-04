@@ -19,7 +19,7 @@ function isValidAuthState(data: unknown): data is AuthState {
   );
 }
 
-function loadAuthState(): AuthState | null {
+export function loadAuthState(): AuthState | null {
   try {
     const stored = localStorage.getItem("misskey_rooms_auth");
     if (!stored) return null;

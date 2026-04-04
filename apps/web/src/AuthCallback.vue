@@ -4,7 +4,7 @@ import { useAuth } from "./composables/useAuth.ts";
 import LoadingSpinner from "./components/LoadingSpinner.vue";
 import BaseButton from "./components/BaseButton.vue";
 
-const { handleJwtCallback } = useAuth();
+const { currentUser, handleJwtCallback } = useAuth();
 const status = ref<"processing" | "error">("processing");
 
 function isValidRedirectUrl(url: string): boolean {
@@ -27,7 +27,10 @@ onMounted(async () => {
   if (jwt) {
     const ok = await handleJwtCallback(jwt);
     if (ok) {
-      location.replace(isValidRedirectUrl(returnTo) ? returnTo : "/");
+      const myPagePath = currentUser.value
+        ? `/${encodeURIComponent(currentUser.value.userId)}`
+        : null;
+      location.replace(myPagePath ?? (isValidRedirectUrl(returnTo) ? returnTo : "/"));
       return;
     }
   }

@@ -95,35 +95,6 @@ export const router = os.router({
     return { ok: true as const };
   }),
 
-  getRandomUser: os.getRandomUser.handler(async ({ context }) => {
-    const prefix = "room:";
-    const users = new Set<string>();
-    let cursor: string | undefined;
-
-    // KVストアから全ユーザーを収集
-    do {
-      const listResult = await context.MISSKEY_ROOMS.list({ prefix, cursor });
-      for (const key of listResult.keys) {
-        const parts = key.name.slice(prefix.length).split(":");
-        if (parts.length >= 1) {
-          users.add(parts[0]);
-        }
-      }
-      cursor = listResult.list_complete ? undefined : listResult.cursor;
-    } while (cursor);
-
-    if (users.size === 0) {
-      throw new ORPCError("NOT_FOUND", {
-        message: "利用可能なルームがありません",
-      });
-    }
-
-    const userArray = Array.from(users);
-    const randomUserId = userArray[Math.floor(Math.random() * userArray.length)];
-
-    return { userId: randomUserId };
-  }),
-
   getUserInfo: os.getUserInfo.handler(async ({ input }) => {
     const { userId } = input;
     const cacheKey = new Request(`https://rooms.misskey.io/user-info/${userId}`);

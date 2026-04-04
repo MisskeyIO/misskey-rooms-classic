@@ -49,8 +49,6 @@ export const contract = {
     .input(z.object({ userId: z.string(), floor: z.number().int().default(0) }))
     .output(z.object({ ok: z.literal(true) })),
 
-  getRandomUser: oc.input(z.object({})).output(z.object({ userId: z.string() })),
-
   getUserInfo: oc.input(z.object({ userId: z.string() })).output(
     z.object({
       userId: z.string(),

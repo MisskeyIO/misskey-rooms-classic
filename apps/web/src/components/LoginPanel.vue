@@ -1,8 +1,12 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { useAuth } from "../composables/useAuth.ts";
 import BaseButton from "./BaseButton.vue";
 
 const { isLoggedIn, currentUser, startLogin, logout } = useAuth();
+const myRoomHref = computed(() =>
+  currentUser.value ? `/${encodeURIComponent(currentUser.value.userId)}` : undefined,
+);
 </script>
 
 <template>
@@ -15,6 +19,7 @@ const { isLoggedIn, currentUser, startLogin, logout } = useAuth();
         :alt="currentUser!.name"
       />
       <span class="username">@{{ currentUser!.userId }}</span>
+      <BaseButton v-if="myRoomHref" :href="myRoomHref">自分の部屋へ</BaseButton>
       <BaseButton @click="logout">ログアウト</BaseButton>
     </template>
     <template v-else>
