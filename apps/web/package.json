@@ -23,7 +23,7 @@
     "@types/uuid": "catalog:",
     "@vitejs/plugin-vue": "catalog:",
     "typescript": "catalog:",
-    "vite": "npm:@voidzero-dev/vite-plus-core@latest",
+    "vite": "catalog:",
     "vite-plus": "catalog:"
   }
 }
