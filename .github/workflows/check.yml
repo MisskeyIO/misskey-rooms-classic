@@ -36,6 +36,4 @@ jobs:
         run: pnpm --filter @misskey-rooms/web build
 
       - name: Validate API deploy
-        env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: pnpm --filter `@misskey-rooms/api` exec wrangler deploy --dry-run
